@@ -27,8 +27,9 @@ export default function ReadOnlyTranscript({ segments, speakers, field, isActive
         {segments.map((seg, i) => {
           const text = seg[field] || seg.raw_text || "";
           const isMatch = matchSegIndex?.includes(i);
+          const active = isActive?.(seg.id);
           return (
-            <div data-seg-id={seg.id} className={`rounded-lg px-3 py-2.5 transition-colors ${isActive ? "bg-primary/5 ring-1 ring-primary/20" : isMatch ? "bg-yellow-50" : ""} ${currentMatchSegIndex === i ? "ring-2 ring-yellow-400" : ""}`}>
+            <div key={seg.id} data-seg-id={seg.id} className={`rounded-lg px-3 py-2.5 transition-colors ${active ? "bg-primary/5 ring-1 ring-primary/20" : isMatch ? "bg-yellow-50" : ""} ${currentMatchSegIndex === i ? "ring-2 ring-yellow-400" : ""}`}>
               <div className="flex items-center gap-2 mb-1.5">
                 {timestampMode !== "none" && (
                   <button onClick={() => onSeek?.(seg.start_time)} className="text-xs tabular-nums text-muted-foreground hover:text-primary font-mono">[{formatTime(seg.start_time)}]</button>

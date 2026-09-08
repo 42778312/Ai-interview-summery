@@ -238,6 +238,14 @@ export default function Workspace() {
     }
   }, [currentMatchSegIndex, segments]);
 
+  // Keep the currently-playing segment in view during playback, instead of
+  // leaving the highlight to scroll off-screen while the page stays put.
+  useEffect(() => {
+    if (!activeSegmentId) return;
+    const el = document.querySelector(`[data-seg-id="${activeSegmentId}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [activeSegmentId]);
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-7 h-7 animate-spin text-muted-foreground" /></div>;
   if (error) return <div className="min-h-screen flex flex-col items-center justify-center gap-3"><AlertCircle className="w-8 h-8 text-red-500" /><p className="text-muted-foreground">{error}</p><Button variant="outline" onClick={() => navigate("/")}>Back to dashboard</Button></div>;
   if (!project) return null;
