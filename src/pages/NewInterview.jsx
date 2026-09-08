@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UploadCloud, FileAudio, X, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { Card } from "@/components/ui/card";
 import { supabase } from "@/lib/supabaseClient";
 import { transcriptService } from "@/services/transcriptService";
 import ProcessingView from "@/components/workspace/ProcessingView";
@@ -80,9 +81,9 @@ export default function NewInterview() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-6 md:px-10 py-12 md:py-16">
-        <button onClick={() => navigate(-1)} className="flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
+        <Button variant="ghost" size="sm" className="mb-8 -ml-3 text-muted-foreground" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
-        </button>
+        </Button>
         <h1 className="font-heading text-3xl md:text-4xl font-semibold tracking-tight mb-2">New Interview</h1>
         <p className="text-muted-foreground mb-10">Upload an audio recording to transcribe and edit.</p>
 
@@ -103,7 +104,7 @@ export default function NewInterview() {
         </div>
 
         {file && (
-          <div className="mt-6 p-5 rounded-xl border bg-card flex items-center gap-4">
+          <Card className="mt-6 p-5 shadow-none flex items-center gap-4">
             <div className="w-11 h-11 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
               <FileAudio className="w-5 h-5 text-primary/70" />
             </div>
@@ -116,13 +117,13 @@ export default function NewInterview() {
               </div>
             </div>
             <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setFile(null)}><X className="w-4 h-4" /></Button>
-          </div>
+          </Card>
         )}
 
         {error && (
-          <div className="mt-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+          <div className="mt-6 p-4 rounded-xl bg-destructive/10 text-destructive text-sm">
             {error}
-            <button onClick={startTranscription} className="ml-3 font-medium underline">Retry</button>
+            <Button variant="link" className="h-auto p-0 ml-3 text-destructive" onClick={startTranscription}>Retry</Button>
           </div>
         )}
 

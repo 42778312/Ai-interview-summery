@@ -2,8 +2,10 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileText, FileType2, FileCode, Copy, Check, GraduationCap, Sparkles, RefreshCw, Loader2 } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { formatTime, speakerName } from "@/lib/transcriptUtils";
 import {
   exportDocx, exportPdf, exportTxt, exportMarkdown, copyToClipboard,
@@ -80,28 +82,31 @@ export default function ExportDialog({ open, onClose, project, transcript, onRep
           <DialogDescription>Configure and export your transcript as a professional document.</DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-1.5 mb-1">
-          <button onClick={() => setMode("transcript")}
-            className={`text-sm py-2 rounded-lg border flex items-center justify-center gap-1.5 ${mode === "transcript" ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}>
+        <ToggleGroup
+          type="single"
+          value={mode}
+          onValueChange={(v) => v && setMode(v)}
+          className="grid grid-cols-2 gap-1.5 mb-1"
+        >
+          <ToggleGroupItem value="transcript" className="border gap-1.5 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
             <FileText className="w-3.5 h-3.5" /> Transcript
-          </button>
-          <button onClick={() => setMode("report")}
-            className={`text-sm py-2 rounded-lg border flex items-center justify-center gap-1.5 ${mode === "report" ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}>
+          </ToggleGroupItem>
+          <ToggleGroupItem value="report" className="border gap-1.5 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
             <GraduationCap className="w-3.5 h-3.5" /> Academic Report
-          </button>
-        </div>
+          </ToggleGroupItem>
+        </ToggleGroup>
 
         <div className="grid md:grid-cols-2 gap-6 overflow-auto pr-1">
           <div className="space-y-5">
             <div>
               <Label className="text-xs text-muted-foreground mb-2 block">Document information</Label>
               <div className="space-y-2">
-                <input value={settings.title} onChange={(e) => set("title", e.target.value)} placeholder="Document title" className="w-full text-sm bg-muted/40 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary" />
+                <Input value={settings.title} onChange={(e) => set("title", e.target.value)} placeholder="Document title" className="bg-muted/40 border-0" />
                 <div className="grid grid-cols-2 gap-2">
-                  <input value={settings.interviewee} onChange={(e) => set("interviewee", e.target.value)} placeholder="Interviewee" className="text-sm bg-muted/40 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary" />
-                  <input value={settings.interviewer} onChange={(e) => set("interviewer", e.target.value)} placeholder="Interviewer" className="text-sm bg-muted/40 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary" />
-                  <input value={settings.date} onChange={(e) => set("date", e.target.value)} placeholder="Date" className="text-sm bg-muted/40 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary" />
-                  <input value={settings.company} onChange={(e) => set("company", e.target.value)} placeholder="Company / Organization" className="text-sm bg-muted/40 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary" />
+                  <Input value={settings.interviewee} onChange={(e) => set("interviewee", e.target.value)} placeholder="Interviewee" className="bg-muted/40 border-0" />
+                  <Input value={settings.interviewer} onChange={(e) => set("interviewer", e.target.value)} placeholder="Interviewer" className="bg-muted/40 border-0" />
+                  <Input value={settings.date} onChange={(e) => set("date", e.target.value)} placeholder="Date" className="bg-muted/40 border-0" />
+                  <Input value={settings.company} onChange={(e) => set("company", e.target.value)} placeholder="Company / Organization" className="bg-muted/40 border-0" />
                 </div>
               </div>
             </div>
@@ -110,12 +115,18 @@ export default function ExportDialog({ open, onClose, project, transcript, onRep
               <>
                 <div>
                   <Label className="text-xs text-muted-foreground mb-2 block">Formatting</Label>
-                  <div className="grid grid-cols-3 gap-1.5">
+                  <ToggleGroup
+                    type="single"
+                    value={settings.formatting}
+                    onValueChange={(v) => v && set("formatting", v)}
+                    className="grid grid-cols-3 gap-1.5"
+                  >
                     {FORMATS.map((f) => (
-                      <button key={f.key} onClick={() => set("formatting", f.key)}
-                        className={`text-xs py-1.5 rounded-lg border ${settings.formatting === f.key ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}>{f.label}</button>
+                      <ToggleGroupItem key={f.key} value={f.key} className="text-xs border data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+                        {f.label}
+                      </ToggleGroupItem>
                     ))}
-                  </div>
+                  </ToggleGroup>
                 </div>
 
                 <div>

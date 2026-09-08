@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, AlertCircle, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { formatTime } from "@/lib/transcriptUtils";
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
@@ -59,11 +60,11 @@ export default function AudioPlayer({ audioRef, audioUrl, duration, onTimeUpdate
     <div className="flex items-center gap-3 md:gap-5 px-4 py-3 bg-card border-b">
       <audio ref={(el) => { audioRef.current = el; localRef.current = el; }} preload="metadata" />
       <div className="flex items-center gap-1.5">
-        <button onClick={() => skip(-5)} className="w-9 h-9 rounded-full hover:bg-muted flex items-center justify-center" title="Back 5s"><SkipBack className="w-4 h-4" /></button>
-        <button onClick={toggle} className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition" title="Play/Pause">
+        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => skip(-5)} title="Back 5s"><SkipBack className="w-4 h-4" /></Button>
+        <Button size="icon" className="h-11 w-11 rounded-full" onClick={toggle} title="Play/Pause">
           {loading && playing ? <Loader2 className="w-5 h-5 animate-spin" /> : playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
-        </button>
-        <button onClick={() => skip(5)} className="w-9 h-9 rounded-full hover:bg-muted flex items-center justify-center" title="Forward 5s"><SkipForward className="w-4 h-4" /></button>
+        </Button>
+        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => skip(5)} title="Forward 5s"><SkipForward className="w-4 h-4" /></Button>
       </div>
 
       <div className="flex-1 flex items-center gap-3 min-w-0">
@@ -79,9 +80,9 @@ export default function AudioPlayer({ audioRef, audioUrl, duration, onTimeUpdate
           className="text-xs bg-muted/60 rounded-full px-2.5 py-1 border-0 outline-none cursor-pointer">
           {SPEEDS.map((s) => <option key={s} value={s}>{s}x</option>)}
         </select>
-        <button onClick={toggleMute} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center">
+        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={toggleMute}>
           {muted || volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-        </button>
+        </Button>
         <input type="range" min={0} max={1} step={0.05} value={muted ? 0 : volume}
           onChange={(e) => changeVol(Number(e.target.value))}
           className="w-20 h-1.5 rounded-full appearance-none bg-muted accent-primary cursor-pointer" />

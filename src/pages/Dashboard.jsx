@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, MoreHorizontal, Copy, Trash2, Pencil, Download, FileText, Clock } from "lucide-react";
+import { Plus, MoreHorizontal, Copy, Trash2, Pencil, Download, AudioLines, Clock } from "lucide-react";
 import { projectService } from "@/services/projectService";
-import { transcriptService } from "@/services/transcriptService";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration, formatRelative, formatDate, statusColor, statusLabel } from "@/lib/transcriptUtils";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
@@ -62,28 +65,29 @@ export default function Dashboard() {
 
         {projects === null ? (
           <div className="space-y-3">
-            {[0, 1, 2].map((i) => <div key={i} className="h-20 rounded-xl bg-muted/50 animate-pulse" />)}
+            {[0, 1, 2].map((i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
           </div>
         ) : projects.length === 0 ? (
-          <div className="text-center py-24 border border-dashed rounded-2xl">
-            <FileText className="w-10 h-10 mx-auto text-muted-foreground/40 mb-4" />
+          <Card className="text-center py-24 border-dashed shadow-none">
+            <AudioLines className="w-10 h-10 mx-auto text-muted-foreground/40 mb-4" />
             <p className="text-muted-foreground">No interviews yet. Start by uploading a recording.</p>
-          </div>
+          </Card>
         ) : (
           <div className="space-y-3">
             {projects.map((p) => (
-              <div key={p.id} className="group flex items-center gap-4 p-5 rounded-xl border bg-card hover:shadow-sm transition-shadow">
+              <Card key={p.id} className="group flex items-center gap-4 p-5 shadow-none hover:shadow-sm transition-shadow">
                 <div className="w-10 h-10 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
-                  <FileText className="w-5 h-5 text-primary/70" />
+                  <AudioLines className="w-5 h-5 text-primary/70" />
                 </div>
                 <button onClick={() => navigate(`/workspace/${p.id}`)} className="flex-1 text-left min-w-0">
                   {renaming === p.id ? (
-                    <input
+                    <Input
                       autoFocus value={renameValue}
                       onChange={(e) => setRenameValue(e.target.value)}
                       onBlur={() => handleRename(p.id)}
                       onKeyDown={(e) => e.key === "Enter" && handleRename(p.id)}
-                      className="font-medium text-foreground bg-transparent border-b border-primary outline-none"
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-7 max-w-xs border-0 border-b border-primary rounded-none bg-transparent px-0 font-medium shadow-none focus-visible:ring-0"
                     />
                   ) : (
                     <div className="font-medium text-foreground truncate">{p.title}</div>
@@ -94,7 +98,7 @@ export default function Dashboard() {
                     <span>Edited {formatRelative(p.last_edited || p.updated_date)}</span>
                   </div>
                 </button>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${statusColor(p.status)}`}>{statusLabel(p.status)}</span>
+                <Badge variant="secondary" className={`font-medium ${statusColor(p.status)}`}>{statusLabel(p.status)}</Badge>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full"><MoreHorizontal className="w-4 h-4" /></Button>
@@ -104,10 +108,10 @@ export default function Dashboard() {
                     <DropdownMenuItem onClick={() => { setRenaming(p.id); setRenameValue(p.title); }}><Pencil className="w-4 h-4 mr-2" /> Rename</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleDuplicate(p.id)}><Copy className="w-4 h-4 mr-2" /> Duplicate</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate(`/workspace/${p.id}?export=1`)}><Download className="w-4 h-4 mr-2" /> Export</DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(p.id)}><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
+                    <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(p.id)}><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </div>
+              </Card>
             ))}
           </div>
         )}

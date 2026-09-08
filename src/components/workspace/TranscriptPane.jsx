@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Search, Bold, Italic, StickyNote } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SearchBar from "./SearchBar";
 import ReadOnlyTranscript from "./ReadOnlyTranscript";
 import SegmentEditor from "./SegmentEditor";
@@ -36,21 +38,20 @@ export default function TranscriptPane({
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex items-center justify-between px-4 py-2 border-b">
-        <div className="flex items-center gap-1">
-          {VIEWS.map((v) => (
-            <button key={v.key} onClick={() => setActiveView(v.key)}
-              className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${activeView === v.key ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
-              {v.label}
-            </button>
-          ))}
-        </div>
+        <Tabs value={activeView} onValueChange={setActiveView}>
+          <TabsList>
+            {VIEWS.map((v) => (
+              <TabsTrigger key={v.key} value={v.key}>{v.label}</TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
         <div className="flex items-center gap-2">
           {activeView === "raw" && <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">Original transcript</span>}
           <select value={timestampMode} onChange={(e) => setTimestampMode(e.target.value)}
             className="text-xs bg-muted/40 rounded-lg px-2 py-1 border-0 outline-none cursor-pointer">
             {TIMESTAMP_MODES.map((t) => <option key={t.key} value={t.key}>{t.label}</option>)}
           </select>
-          <button onClick={() => setSearchOpen(!searchOpen)} className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center"><Search className="w-4 h-4" /></button>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSearchOpen(!searchOpen)}><Search className="w-4 h-4" /></Button>
         </div>
       </div>
 
@@ -61,10 +62,10 @@ export default function TranscriptPane({
 
       {activeView === "current" && (
         <div className="flex items-center gap-1 px-4 py-1.5 border-b bg-muted/20">
-          <button onMouseDown={(e) => { e.preventDefault(); exec("bold"); }} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center font-bold"><Bold className="w-3.5 h-3.5" /></button>
-          <button onMouseDown={(e) => { e.preventDefault(); exec("italic"); }} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center italic"><Italic className="w-3.5 h-3.5" /></button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onMouseDown={(e) => { e.preventDefault(); exec("bold"); }}><Bold className="w-3.5 h-3.5" /></Button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onMouseDown={(e) => { e.preventDefault(); exec("italic"); }}><Italic className="w-3.5 h-3.5" /></Button>
           <div className="w-px h-4 bg-border mx-1" />
-          <button onMouseDown={(e) => { e.preventDefault(); insertNote(); }} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center"><StickyNote className="w-3.5 h-3.5" /></button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onMouseDown={(e) => { e.preventDefault(); insertNote(); }}><StickyNote className="w-3.5 h-3.5" /></Button>
         </div>
       )}
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, History, Loader2, PanelLeft, PanelRight, AlertCircle } from "lucide-react";
+import { ArrowLeft, Save, History, Loader2, PanelLeft, PanelRight, AlertCircle, X } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { projectService } from "@/services/projectService";
 import { transcriptService } from "@/services/transcriptService";
@@ -256,15 +256,15 @@ export default function Workspace() {
   return (
     <div className="h-screen flex flex-col bg-background">
       <div className="flex items-center gap-3 px-4 py-2.5 border-b bg-card">
-        <button onClick={() => navigate("/")} className="w-9 h-9 rounded-full hover:bg-muted flex items-center justify-center"><ArrowLeft className="w-4 h-4" /></button>
+        <Button variant="ghost" size="icon" className="rounded-full shrink-0" onClick={() => navigate("/")}><ArrowLeft className="w-4 h-4" /></Button>
         <h1 className="font-heading font-semibold truncate flex-1">{project.title}</h1>
         <span className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground">
           {saving === "saving" ? <><Loader2 className="w-3 h-3 animate-spin" /> Saving…</> : saving === "saved" ? <><Save className="w-3 h-3" /> Saved</> : "All changes saved"}
         </span>
         <Button variant="ghost" size="sm" onClick={() => setShowVersions(true)}><History className="w-4 h-4 mr-1.5" /> History</Button>
         <Button size="sm" onClick={() => setShowExport(true)} className="rounded-full">Export</Button>
-        <button onClick={() => setLeftOpen(true)} className="lg:hidden w-9 h-9 rounded-full hover:bg-muted flex items-center justify-center"><PanelLeft className="w-4 h-4" /></button>
-        <button onClick={() => setRightOpen(true)} className="lg:hidden w-9 h-9 rounded-full hover:bg-muted flex items-center justify-center"><PanelRight className="w-4 h-4" /></button>
+        <Button variant="ghost" size="icon" className="lg:hidden rounded-full shrink-0" onClick={() => setLeftOpen(true)}><PanelLeft className="w-4 h-4" /></Button>
+        <Button variant="ghost" size="icon" className="lg:hidden rounded-full shrink-0" onClick={() => setRightOpen(true)}><PanelRight className="w-4 h-4" /></Button>
       </div>
 
       <AudioPlayer audioRef={audioRef} audioUrl={audioUrl} duration={project.duration} onTimeUpdate={onTimeUpdate} />
@@ -273,7 +273,11 @@ export default function Workspace() {
         <aside className={`${leftOpen ? "absolute inset-y-0 left-0 z-30 w-72 bg-card border-r shadow-xl" : "hidden"} lg:relative lg:flex lg:w-72 lg:shadow-none flex-col overflow-auto border-r`}>
           <ProjectInfo project={project} onRenameSpeaker={renameSpeaker} />
           <ChaptersPanel chapters={project.chapters || []} onGenerate={generateChapters} generating={generating} onAdd={addChapter} onRename={renameChapter} onDelete={deleteChapter} onReorder={reorderChapter} onSeek={seek} />
-          {leftOpen && <button onClick={() => setLeftOpen(false)} className="lg:hidden absolute top-2 right-2 w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs">✕</button>}
+          {leftOpen && (
+            <Button variant="secondary" size="icon" className="lg:hidden absolute top-2 right-2 h-7 w-7 rounded-full" onClick={() => setLeftOpen(false)}>
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          )}
         </aside>
 
         <main className="flex-1 overflow-hidden">
@@ -291,7 +295,11 @@ export default function Workspace() {
         <aside className={`${rightOpen ? "absolute inset-y-0 right-0 z-30 w-80 bg-card border-l shadow-xl" : "hidden"} lg:relative lg:flex lg:w-80 lg:shadow-none flex-col overflow-auto border-l`}>
           <CleanupPanel options={cleanupOptions} setOptions={setCleanupOptions} onClean={clean} cleaning={cleaning} changesCount={changesCount} hasClean={hasClean}
             onViewChanges={() => setActiveView("compare")} onAcceptAll={acceptAll} onRejectAll={rejectAll} onExport={() => setShowExport(true)} />
-          {rightOpen && <button onClick={() => setRightOpen(false)} className="lg:hidden absolute top-2 left-2 w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs">✕</button>}
+          {rightOpen && (
+            <Button variant="secondary" size="icon" className="lg:hidden absolute top-2 left-2 h-7 w-7 rounded-full" onClick={() => setRightOpen(false)}>
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          )}
         </aside>
       </div>
 

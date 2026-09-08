@@ -47,10 +47,10 @@ export default function ChaptersPanel({ chapters, onGenerate, generating, onAdd,
               <button onClick={() => onSeek?.(ch.start_time)} className="text-sm text-left flex-1 truncate">{ch.title}</button>
             )}
             <div className="opacity-0 group-hover:opacity-100 flex items-center">
-              <button onClick={() => onReorder(i, -1)} disabled={i === 0} className="w-6 h-6 rounded hover:bg-muted flex items-center justify-center disabled:opacity-20"><ChevronUp className="w-3.5 h-3.5" /></button>
-              <button onClick={() => onReorder(i, 1)} disabled={i === chapters.length - 1} className="w-6 h-6 rounded hover:bg-muted flex items-center justify-center disabled:opacity-20"><ChevronDown className="w-3.5 h-3.5" /></button>
-              <button onClick={() => { setEditing(ch.id); setEditVal(ch.title); }} className="w-6 h-6 rounded hover:bg-muted flex items-center justify-center"><Pencil className="w-3.5 h-3.5" /></button>
-              <button onClick={() => onDelete(ch.id)} className="w-6 h-6 rounded hover:bg-muted flex items-center justify-center text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
+              <Button variant="ghost" size="icon" className="h-6 w-6" disabled={i === 0} onClick={() => onReorder(i, -1)}><ChevronUp className="w-3.5 h-3.5" /></Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6" disabled={i === chapters.length - 1} onClick={() => onReorder(i, 1)}><ChevronDown className="w-3.5 h-3.5" /></Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { setEditing(ch.id); setEditVal(ch.title); }}><Pencil className="w-3.5 h-3.5" /></Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive" onClick={() => onDelete(ch.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
             </div>
           </div>
         ))}

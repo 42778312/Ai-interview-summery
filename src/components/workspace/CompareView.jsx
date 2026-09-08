@@ -47,8 +47,8 @@ export default function CompareView({ segments, speakers, onAccept, onReject, on
           <span className="text-xs text-muted-foreground">{pendingIndexes.length} pending of {suggestionIndexes.length}</span>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={goPrev} disabled={!pendingIndexes.length} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center disabled:opacity-30"><ChevronUp className="w-4 h-4" /></button>
-          <button onClick={goNext} disabled={!pendingIndexes.length} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center disabled:opacity-30"><ChevronDown className="w-4 h-4" /></button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={goPrev} disabled={!pendingIndexes.length}><ChevronUp className="w-4 h-4" /></Button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={goNext} disabled={!pendingIndexes.length}><ChevronDown className="w-4 h-4" /></Button>
           {pendingIndexes.length > 0 && (
             <span className="text-xs text-muted-foreground tabular-nums px-1">{Math.min(cursor, pendingIndexes.length - 1) + 1} / {pendingIndexes.length}</span>
           )}

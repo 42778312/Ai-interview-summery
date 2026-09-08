@@ -1,0 +1,8 @@
+{
+  "name": "Interview Transcripts",
+  "short_name": "Transcripts",
+  "icons": [{ "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" }],
+  "theme_color": "#171717",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

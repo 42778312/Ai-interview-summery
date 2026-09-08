@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Search, X, ChevronUp, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function SearchBar({ query, onChange, matchCount, currentMatch, onPrev, onNext, onClose }) {
   const inputRef = useRef(null);
@@ -35,9 +36,9 @@ export default function SearchBar({ query, onChange, matchCount, currentMatch, o
           {matchCount > 0 ? `${currentMatch + 1} of ${matchCount}` : "0 matches"}
         </span>
       )}
-      <button onClick={onPrev} disabled={!matchCount} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center disabled:opacity-30"><ChevronUp className="w-4 h-4" /></button>
-      <button onClick={onNext} disabled={!matchCount} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center disabled:opacity-30"><ChevronDown className="w-4 h-4" /></button>
-      <button onClick={onClose} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center"><X className="w-4 h-4" /></button>
+      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onPrev} disabled={!matchCount}><ChevronUp className="w-4 h-4" /></Button>
+      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onNext} disabled={!matchCount}><ChevronDown className="w-4 h-4" /></Button>
+      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}><X className="w-4 h-4" /></Button>
     </div>
   );
 }

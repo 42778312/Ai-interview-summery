@@ -3,6 +3,7 @@ import { Sparkles, Loader2, Eye, CheckCheck, XCircle, FileDown } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const OPTION_LABELS = [
   { key: "remove_fillers", label: "Remove filler words" },
@@ -50,27 +51,39 @@ export default function CleanupPanel({ options, setOptions, onClean, cleaning, c
 
       <div>
         <Label className="text-xs text-muted-foreground mb-2 block">Cleanup strength</Label>
-        <div className="grid grid-cols-3 gap-1.5">
+        <ToggleGroup
+          type="single"
+          value={options.strength}
+          onValueChange={(v) => v && setOptions({ ...options, strength: v })}
+          className="grid grid-cols-3 gap-1.5"
+        >
           {STRENGTHS.map((s) => (
-            <button key={s.key} onClick={() => setOptions({ ...options, strength: s.key })}
-              className={`text-xs py-1.5 rounded-lg border transition-colors ${options.strength === s.key ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}>
+            <ToggleGroupItem key={s.key} value={s.key} className="text-xs border data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
               {s.label}
-            </button>
+            </ToggleGroupItem>
           ))}
-        </div>
+        </ToggleGroup>
         <p className="text-xs text-muted-foreground mt-2 leading-relaxed">DeepSeek will improve readability while preserving the speaker's original meaning, personality, and voice.</p>
       </div>
 
       <div>
         <Label className="text-xs text-muted-foreground mb-2 block">Environmental sounds</Label>
-        <div className="grid grid-cols-3 gap-1.5">
+        <ToggleGroup
+          type="single"
+          value={options.environmental_sounds}
+          onValueChange={(v) => v && setOptions({ ...options, environmental_sounds: v })}
+          className="grid grid-cols-3 gap-1.5"
+        >
           {SOUND_OPTIONS.map((s) => (
-            <button key={s.key} onClick={() => setOptions({ ...options, environmental_sounds: s.key })}
-              className={`text-xs py-1.5 rounded-lg border transition-colors ${options.environmental_sounds === s.key ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}>
+            <ToggleGroupItem
+              key={s.key}
+              value={s.key}
+              className="h-auto min-h-9 py-1.5 px-1.5 whitespace-normal text-center leading-tight text-xs border data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+            >
               {s.label}
-            </button>
+            </ToggleGroupItem>
           ))}
-        </div>
+        </ToggleGroup>
       </div>
 
       <Button className="w-full rounded-full" disabled={cleaning} onClick={onClean}>
