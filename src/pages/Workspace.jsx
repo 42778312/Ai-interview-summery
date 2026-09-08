@@ -178,10 +178,10 @@ export default function Workspace() {
     scheduleSave();
   }, [scheduleSave]);
 
-  const acceptChange = useCallback((segId) => { setSegments((p) => p.map((s) => (s.id === segId ? { ...s, current_text: s.clean_text || s.raw_text } : s))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
-  const rejectChange = useCallback((segId) => { setSegments((p) => p.map((s) => (s.id === segId ? { ...s, current_text: s.raw_text } : s))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
-  const acceptAll = useCallback(() => { setSegments((p) => p.map((s) => ({ ...s, current_text: s.clean_text || s.raw_text }))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
-  const rejectAll = useCallback(() => { setSegments((p) => p.map((s) => ({ ...s, current_text: s.raw_text }))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
+  const acceptChange = useCallback((segId) => { setSegments((p) => p.map((s) => (s.id === segId ? { ...s, current_text: s.clean_text || s.raw_text, resolved: true } : s))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
+  const rejectChange = useCallback((segId) => { setSegments((p) => p.map((s) => (s.id === segId ? { ...s, current_text: s.raw_text, resolved: true } : s))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
+  const acceptAll = useCallback(() => { setSegments((p) => p.map((s) => ({ ...s, current_text: s.clean_text || s.raw_text, resolved: true }))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
+  const rejectAll = useCallback(() => { setSegments((p) => p.map((s) => ({ ...s, current_text: s.raw_text, resolved: true }))); setRefreshKey((k) => k + 1); scheduleSave(); }, [scheduleSave]);
 
   const clean = async () => {
     setCleaning(true);

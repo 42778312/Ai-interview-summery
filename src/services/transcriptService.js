@@ -134,9 +134,9 @@ export const transcriptService = {
           const cleanText = (result.clean_text || seg.raw_text).trim();
           const changes = Array.isArray(result.changes) ? result.changes : [];
           changesCount += changes.length;
-          return { ...seg, clean_text: cleanText, current_text: cleanText, changes };
+          return { ...seg, clean_text: cleanText, current_text: cleanText, changes, resolved: false };
         }
-        return { ...seg, clean_text: seg.raw_text, current_text: seg.raw_text, changes: [] };
+        return { ...seg, clean_text: seg.raw_text, current_text: seg.raw_text, changes: [], resolved: false };
       });
 
       const cleanText = updatedSegments.map((s) => `${speakerLabel(speakers, s)}: ${s.clean_text}`).join("\n\n");
