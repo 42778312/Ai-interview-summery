@@ -287,7 +287,13 @@ export default function Workspace() {
         </aside>
       </div>
 
-      <ExportDialog open={showExport} onClose={() => setShowExport(false)} project={project} transcript={transcript} />
+      <ExportDialog
+        open={showExport}
+        onClose={() => setShowExport(false)}
+        project={project}
+        transcript={transcript}
+        onReportGenerated={(report) => setTranscript((t) => (t ? { ...t, report_text: report } : t))}
+      />
       <VersionHistory open={showVersions} onClose={() => setShowVersions(false)} project={project} onRestore={restoreVersion} />
     </div>
   );

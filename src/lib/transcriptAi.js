@@ -145,6 +145,58 @@ The clean_text must be the full cleaned text for that segment. List every indivi
   return { messages: [{ role: "system", content: system }, { role: "user", content: user }] };
 }
 
+export function buildAcademicReportPrompt(transcriptText, meta = {}) {
+  const { title, interviewee, interviewer } = meta;
+
+  const system = `You are an experienced academic researcher who writes formal, university-level qualitative research reports based on interview transcripts.
+
+You will be given the full transcript of an interview (a series of questions and answers). Transform it into a formal academic report analyzing the interview's content — this is a qualitative analysis of interview data, not a transcript reproduction and not a casual summary.
+
+REQUIREMENTS:
+- Length: the report body MUST be more than 2000 words (excluding the title). Aim for 2200-2800 words so you comfortably clear the minimum. This is a hard requirement — do not stop early.
+- Tone: formal, academic, third-person, analytical. Avoid conversational language, contractions, and first-person commentary.
+- Grounding: base every claim strictly on what is present in or reasonably inferable from the transcript. Never invent facts, statistics, sources, or quotes that are not in the transcript.
+- Structure the report with clear Markdown headings, in this order:
+  # <A descriptive academic title for the report>
+  ## Abstract
+  (150-200 words summarizing the purpose, approach, and key findings)
+  ## Introduction
+  (context and purpose of the interview, who was involved if known, objectives of this analysis)
+  ## Methodology
+  (briefly state that this report is a qualitative thematic analysis of a single semi-structured interview; note the inherent limitations of single-source qualitative data)
+  ## Thematic Findings
+  (identify 3-6 coherent themes across the interview; use a "### Theme name" subheading for each; synthesize and interpret what was said in each theme rather than just quoting — paraphrase primarily, and use short direct quotations sparingly, clearly introduced, e.g. As the interviewee explained, "...")
+  ## Discussion
+  (interpret the findings collectively, connect themes to broader implications, note any tensions, contradictions, or notable emphases)
+  ## Conclusion
+  (summarize key insights and, if appropriate, suggest areas for further inquiry)
+- Return ONLY the report text in Markdown, starting with the "# " title line. No preamble, no commentary, no meta-notes about the task.`;
+
+  const metaLines = [];
+  if (title) metaLines.push(`Interview title: ${title}`);
+  if (interviewee) metaLines.push(`Interviewee: ${interviewee}`);
+  if (interviewer) metaLines.push(`Interviewer: ${interviewer}`);
+  const metaBlock = metaLines.length ? `${metaLines.join("\n")}\n\n` : "";
+
+  const user = `${metaBlock}Interview transcript:\n\n${transcriptText}`;
+
+  return { messages: [{ role: "system", content: system }, { role: "user", content: user }] };
+}
+
+export function buildReportExpansionPrompt(priorMessages, currentWordCount) {
+  return [
+    ...priorMessages,
+    {
+      role: "user",
+      content: `The report so far is only about ${currentWordCount} words, and it must be more than 2000. Continue the report directly from where it left off — add further thematic elaboration, discussion, and analysis grounded in the transcript — until the total exceeds 2000 words. Do not repeat earlier content, do not restart the title or headings already covered, and do not add any commentary about this instruction. Continue in the same Markdown style.`
+    }
+  ];
+}
+
+export function countWords(text) {
+  return (text || "").trim().split(/\s+/).filter(Boolean).length;
+}
+
 export const AI_EDIT_GUIDES = {
   clean: "Clean verbatim: remove filler words, false starts, and meaningless repetition while preserving meaning and the speaker's voice. Do not summarize.",
   grammar: "Fix grammar, punctuation, and obvious spelling/transcription errors without changing meaning.",

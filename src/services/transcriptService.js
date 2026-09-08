@@ -7,8 +7,15 @@ import {
   chunkSegments,
   defaultCleanupOptions,
   buildCleanupPrompt,
+  buildAcademicReportPrompt,
+  buildReportExpansionPrompt,
+  countWords,
   AI_EDIT_GUIDES,
 } from "@/lib/transcriptAi";
+import { buildText } from "@/lib/transcriptUtils";
+
+const REPORT_MIN_WORDS = 2000;
+const REPORT_MAX_EXPANSION_ATTEMPTS = 2;
 
 // Everything here used to run as a Supabase Edge Function (server-side, with
 // the API keys kept out of the browser). By request, it now runs entirely in
@@ -201,6 +208,53 @@ start_time and end_time are in seconds, derived from the transcript timing. Cove
     await supabase.from("projects").update({ chapters }).eq("id", project_id);
 
     return { data: { success: true, chapters } };
+  },
+
+  async generateReport({ project_id }) {
+    const { data: project, error: projectError } = await supabase.from("projects").select("*").eq("id", project_id).single();
+    if (projectError) throw new Error("Project not found");
+
+    const { data: transcripts, error: transcriptsError } = await supabase.from("transcripts").select("*").eq("project_id", project_id);
+    if (transcriptsError) throw transcriptsError;
+    if (!transcripts.length) throw new Error("Transcript not found");
+    const transcript = transcripts[0];
+
+    const segments = transcript.segments || [];
+    const speakers = project.speakers || [];
+    const transcriptText = buildText(segments, speakers, "current_text").replace(/<[^>]+>/g, "");
+    if (!transcriptText.trim()) throw new Error("Transcript is empty — nothing to build a report from.");
+
+    const meta = {
+      title: project.title,
+      interviewee: speakers.find((s) => s.role === "Interviewee")?.name,
+      interviewer: speakers.find((s) => s.role === "Interviewer")?.name,
+    };
+
+    let conversation = buildAcademicReportPrompt(transcriptText, meta).messages;
+    let report = await callDeepSeek(conversation, { temperature: 0.5, maxTokens: 4096 });
+    let wordCount = countWords(report);
+
+    let attempts = 0;
+    while (wordCount < REPORT_MIN_WORDS && attempts < REPORT_MAX_EXPANSION_ATTEMPTS) {
+      conversation = buildReportExpansionPrompt([...conversation, { role: "assistant", content: report }], wordCount);
+      const continuation = await callDeepSeek(conversation, { temperature: 0.5, maxTokens: 4096 });
+      report = `${report}\n\n${continuation}`;
+      wordCount = countWords(report);
+      attempts++;
+    }
+
+    // Don't lose a report that just cost several DeepSeek calls to generate
+    // just because the save failed (e.g. the report_text column/migration
+    // isn't applied yet) — surface that separately instead of throwing.
+    let persisted = true;
+    let persistError = null;
+    const { error: updateError } = await supabase.from("transcripts").update({ report_text: report }).eq("id", transcript.id);
+    if (updateError) {
+      persisted = false;
+      persistError = updateError.message;
+    }
+
+    return { data: { success: true, report, word_count: wordCount, persisted, persistError } };
   },
 
   async aiEdit({ text, action, context }) {

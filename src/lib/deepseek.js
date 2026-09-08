@@ -1,4 +1,4 @@
-export async function callDeepSeek(messages, { temperature = 0.2, jsonMode = false } = {}) {
+export async function callDeepSeek(messages, { temperature = 0.2, jsonMode = false, maxTokens } = {}) {
   const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY;
   if (!apiKey) throw new Error("DeepSeek API key not configured. Add VITE_DEEPSEEK_API_KEY to .env.");
   const baseUrl = (import.meta.env.VITE_DEEPSEEK_BASE_URL || "https://api.deepseek.com").replace(/\/$/, "");
@@ -6,6 +6,7 @@ export async function callDeepSeek(messages, { temperature = 0.2, jsonMode = fal
 
   const body = { model, messages, temperature };
   if (jsonMode) body.response_format = { type: "json_object" };
+  if (maxTokens) body.max_tokens = maxTokens;
 
   const res = await fetch(`${baseUrl}/chat/completions`, {
     method: "POST",
