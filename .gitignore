@@ -39,4 +39,5 @@ dist-ssr
 # not part of the app.
 .agents
 .claude/skills
+.claude/scheduled_tasks.lock
 skills-lock.json

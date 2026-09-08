@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Check, X, ChevronUp, ChevronDown, CheckCheck, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatTime, speakerName, diffWords } from "@/lib/transcriptUtils";
@@ -18,6 +18,16 @@ export default function CompareView({ segments, speakers, onAccept, onReject, on
   const goPrev = () => setCursor((c) => Math.max(0, c - 1));
   const goNext = () => setCursor((c) => Math.min(changedIndexes.length - 1, c + 1));
 
+  // Keep the current diff in view — including on first mount, so switching
+  // into the Compare tab jumps straight to the first change.
+  useEffect(() => {
+    if (currentChangedIdx < 0) return;
+    const seg = segments[currentChangedIdx];
+    if (!seg) return;
+    const el = document.querySelector(`[data-seg-id="${seg.id}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [currentChangedIdx, segments]);
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-4 py-2.5 border-b bg-card">
@@ -28,6 +38,9 @@ export default function CompareView({ segments, speakers, onAccept, onReject, on
         <div className="flex items-center gap-1">
           <button onClick={goPrev} disabled={!changedIndexes.length} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center disabled:opacity-30"><ChevronUp className="w-4 h-4" /></button>
           <button onClick={goNext} disabled={!changedIndexes.length} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center disabled:opacity-30"><ChevronDown className="w-4 h-4" /></button>
+          {changedIndexes.length > 0 && (
+            <span className="text-xs text-muted-foreground tabular-nums px-1">{Math.min(cursor, changedIndexes.length - 1) + 1} / {changedIndexes.length}</span>
+          )}
           <div className="w-px h-5 bg-border mx-1" />
           <Button variant="outline" size="sm" onClick={onAcceptAll} disabled={!changedIndexes.length}><CheckCheck className="w-3.5 h-3.5 mr-1" />Accept all</Button>
           <Button variant="outline" size="sm" onClick={onRejectAll} disabled={!changedIndexes.length}><XCircle className="w-3.5 h-3.5 mr-1" />Reject all</Button>
@@ -43,7 +56,7 @@ export default function CompareView({ segments, speakers, onAccept, onReject, on
           const isActive = i === currentChangedIdx;
           const diff = isChanged ? diffWords(seg.raw_text, seg.clean_text || seg.raw_text) : [];
           return (
-            <div key={seg.id} className={`grid grid-cols-2 border-b ${isActive ? "ring-1 ring-primary/30" : ""}`}>
+            <div key={seg.id} data-seg-id={seg.id} className={`grid grid-cols-2 border-b ${isActive ? "ring-1 ring-primary/30" : ""}`}>
               <div className="px-4 py-3 border-r text-sm leading-relaxed">
                 <div className="text-xs font-semibold text-muted-foreground mb-1 flex items-center gap-2">
                   <button onClick={() => onSeek?.(seg.start_time)} className="font-mono hover:text-primary">[{formatTime(seg.start_time)}]</button>

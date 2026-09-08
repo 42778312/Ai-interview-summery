@@ -77,18 +77,16 @@ export default function CleanupPanel({ options, setOptions, onClean, cleaning, c
         {cleaning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Cleaning…</> : <><Sparkles className="w-4 h-4 mr-2" /> Clean Transcript</>}
       </Button>
 
-      {hasClean && (
-        <div className="p-3 rounded-lg bg-muted/50 border space-y-2">
-          <p className="text-sm font-medium">{changesCount} changes made</p>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex-1" onClick={onViewChanges}><Eye className="w-3.5 h-3.5 mr-1.5" /> View Changes</Button>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex-1" onClick={onAcceptAll}><CheckCheck className="w-3.5 h-3.5 mr-1.5" /> Accept all</Button>
-            <Button variant="outline" size="sm" className="flex-1" onClick={onRejectAll}><XCircle className="w-3.5 h-3.5 mr-1.5" /> Reject all</Button>
-          </div>
+      <div className="p-3 rounded-lg bg-muted/50 border space-y-2">
+        <p className="text-sm font-medium">{changesCount} changes made</p>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="flex-1" disabled={!hasClean} onClick={onViewChanges}><Eye className="w-3.5 h-3.5 mr-1.5" /> View Changes</Button>
         </div>
-      )}
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="flex-1" disabled={!hasClean} onClick={onAcceptAll}><CheckCheck className="w-3.5 h-3.5 mr-1.5" /> Accept all</Button>
+          <Button variant="outline" size="sm" className="flex-1" disabled={!hasClean} onClick={onRejectAll}><XCircle className="w-3.5 h-3.5 mr-1.5" /> Reject all</Button>
+        </div>
+      </div>
 
       <div className="pt-3 border-t">
         <Button variant="outline" className="w-full rounded-full" onClick={onExport}><FileDown className="w-4 h-4 mr-2" /> Export Document</Button>
