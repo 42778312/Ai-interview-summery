@@ -247,7 +247,7 @@ export default function Workspace() {
   }, [activeSegmentId]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-7 h-7 animate-spin text-muted-foreground" /></div>;
-  if (error) return <div className="min-h-screen flex flex-col items-center justify-center gap-3"><AlertCircle className="w-8 h-8 text-red-500" /><p className="text-muted-foreground">{error}</p><Button variant="outline" onClick={() => navigate("/")}>Back to dashboard</Button></div>;
+  if (error) return <div className="min-h-screen flex flex-col items-center justify-center gap-3"><AlertCircle className="w-8 h-8 text-destructive" /><p className="text-muted-foreground">{error}</p><Button variant="outline" onClick={() => navigate("/")}>Back to dashboard</Button></div>;
   if (!project) return null;
 
   const hasClean = !!(transcript?.clean_text || segments.some((s) => s.clean_text && s.clean_text !== s.raw_text));
@@ -270,7 +270,7 @@ export default function Workspace() {
       <AudioPlayer audioRef={audioRef} audioUrl={audioUrl} duration={project.duration} onTimeUpdate={onTimeUpdate} />
 
       <div className="flex-1 flex overflow-hidden relative">
-        <aside className={`${leftOpen ? "absolute inset-y-0 left-0 z-30 w-72 bg-card border-r shadow-xl" : "hidden"} lg:relative lg:flex lg:w-72 lg:shadow-none flex-col overflow-auto border-r`}>
+        <aside className={`${leftOpen ? "absolute inset-y-0 left-0 z-30 shadow-xl" : "hidden"} lg:relative lg:flex lg:shadow-none w-72 bg-card flex-col overflow-auto border-r`}>
           <ProjectInfo project={project} onRenameSpeaker={renameSpeaker} />
           <ChaptersPanel chapters={project.chapters || []} onGenerate={generateChapters} generating={generating} onAdd={addChapter} onRename={renameChapter} onDelete={deleteChapter} onReorder={reorderChapter} onSeek={seek} />
           {leftOpen && (
@@ -292,7 +292,7 @@ export default function Workspace() {
           />
         </main>
 
-        <aside className={`${rightOpen ? "absolute inset-y-0 right-0 z-30 w-80 bg-card border-l shadow-xl" : "hidden"} lg:relative lg:flex lg:w-80 lg:shadow-none flex-col overflow-auto border-l`}>
+        <aside className={`${rightOpen ? "absolute inset-y-0 right-0 z-30 shadow-xl" : "hidden"} lg:relative lg:flex lg:shadow-none w-80 bg-card flex-col overflow-auto border-l`}>
           <CleanupPanel options={cleanupOptions} setOptions={setCleanupOptions} onClean={clean} cleaning={cleaning} changesCount={changesCount} hasClean={hasClean}
             onViewChanges={() => setActiveView("compare")} onAcceptAll={acceptAll} onRejectAll={rejectAll} onExport={() => setShowExport(true)} />
           {rightOpen && (

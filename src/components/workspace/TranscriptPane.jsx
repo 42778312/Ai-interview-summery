@@ -46,7 +46,7 @@ export default function TranscriptPane({
           </TabsList>
         </Tabs>
         <div className="flex items-center gap-2">
-          {activeView === "raw" && <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">Original transcript</span>}
+          {activeView === "raw" && <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400 font-medium">Original transcript</span>}
           <select value={timestampMode} onChange={(e) => setTimestampMode(e.target.value)}
             className="text-xs bg-muted/40 rounded-lg px-2 py-1 border-0 outline-none cursor-pointer">
             {TIMESTAMP_MODES.map((t) => <option key={t.key} value={t.key}>{t.label}</option>)}

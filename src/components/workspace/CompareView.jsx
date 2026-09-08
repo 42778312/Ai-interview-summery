@@ -85,13 +85,13 @@ export default function CompareView({ segments, speakers, onAccept, onReject, on
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => onAccept(seg.id)}
-                        className={`text-xs px-2 py-0.5 rounded-full flex items-center gap-1 transition-colors ${acceptedClean ? "bg-emerald-600 text-white" : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"}`}
+                        className={`text-xs px-2 py-0.5 rounded-full flex items-center gap-1 transition-colors ${acceptedClean ? "bg-emerald-600 text-white" : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:hover:bg-emerald-500/25"}`}
                       >
                         <Check className="w-3 h-3" />Accept
                       </button>
                       <button
                         onClick={() => onReject(seg.id)}
-                        className={`text-xs px-2 py-0.5 rounded-full flex items-center gap-1 transition-colors ${rejectedRaw ? "bg-red-600 text-white" : "bg-red-100 text-red-700 hover:bg-red-200"}`}
+                        className={`text-xs px-2 py-0.5 rounded-full flex items-center gap-1 transition-colors ${rejectedRaw ? "bg-red-600 text-white" : "bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25"}`}
                       >
                         <X className="w-3 h-3" />Reject
                       </button>
@@ -102,9 +102,9 @@ export default function CompareView({ segments, speakers, onAccept, onReject, on
                   {isPending ? (
                     diff.map((d, k) => {
                       if (d.type === "equal") return <span key={k}>{d.value}</span>;
-                      if (d.type === "added") return <span key={k} className="bg-emerald-100 text-emerald-800 rounded px-0.5">{d.value}</span>;
+                      if (d.type === "added") return <span key={k} className="bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 rounded px-0.5">{d.value}</span>;
                       if (d.type === "removed") return null;
-                      if (d.type === "changed") return <span key={k} className="bg-amber-100 text-amber-800 rounded px-0.5">{d.value}</span>;
+                      if (d.type === "changed") return <span key={k} className="bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 rounded px-0.5">{d.value}</span>;
                       return null;
                     })
                   ) : (

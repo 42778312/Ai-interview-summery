@@ -12,7 +12,7 @@ function highlight(text, query) {
   let key = 0;
   while (idx !== -1) {
     if (idx > last) parts.push(text.slice(last, idx));
-    parts.push(<mark key={key++} className="bg-yellow-200 rounded px-0.5">{text.slice(idx, idx + q.length)}</mark>);
+    parts.push(<mark key={key++} className="bg-yellow-200 dark:bg-yellow-500/30 dark:text-foreground rounded px-0.5">{text.slice(idx, idx + q.length)}</mark>);
     last = idx + q.length;
     idx = lower.indexOf(ql, last);
   }
@@ -29,7 +29,7 @@ export default function ReadOnlyTranscript({ segments, speakers, field, isActive
           const isMatch = matchSegIndex?.includes(i);
           const active = isActive?.(seg.id);
           return (
-            <div key={seg.id} data-seg-id={seg.id} className={`rounded-lg px-3 py-2.5 transition-colors ${active ? "bg-primary/5 ring-1 ring-primary/20" : isMatch ? "bg-yellow-50" : ""} ${currentMatchSegIndex === i ? "ring-2 ring-yellow-400" : ""}`}>
+            <div key={seg.id} data-seg-id={seg.id} className={`rounded-lg px-3 py-2.5 transition-colors ${active ? "bg-primary/5 ring-1 ring-primary/20" : isMatch ? "bg-yellow-50 dark:bg-yellow-500/10" : ""} ${currentMatchSegIndex === i ? "ring-2 ring-yellow-400 dark:ring-yellow-500/60" : ""}`}>
               <div className="flex items-center gap-2 mb-1.5">
                 {timestampMode !== "none" && (
                   <button onClick={() => onSeek?.(seg.start_time)} className="text-xs tabular-nums text-muted-foreground hover:text-primary font-mono">[{formatTime(seg.start_time)}]</button>
